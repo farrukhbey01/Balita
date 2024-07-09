@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 import os
+from storages.backends.s3boto3 import S3Boto3Storage
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -38,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'storages',
     'blog',
     # 'ckeditor',
 ]
@@ -77,10 +79,15 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+
+     'default':{
+         'ENGINE': 'django.db.backends.postgresql',
+         'NAME': 'farruh_balita',
+         'HOST': 'dodb-do-user-17113779-0.a.db.ondigitalocean.com',
+         'USER': 'doadmin',
+         'PASSWORD': 'AVNS_J5A-szb7Q3GiIqAXzw6',
+         'PORT':'25060'
+     }
 }
 
 
@@ -114,18 +121,36 @@ USE_I18N = True
 
 USE_TZ = True
 
+if DEBUG is True:
+    AWS_ACCESS_KEY_ID = 'DO00QFKKECEJ66ABV9GD'
+    AWS_SECRET_ACCESS_KEY = 'DynSRfM4nLPmigZxiw07x2tw0nt9omPeSuhtGUUHrL8'
+    AWS_STORAGE_BUCKET_NAME = 'farruh_balita'
+    AWS_S3_ENDPOINT_URL = 'https://portfolioscdn.blr1.digitaloceanspaces.com'
+    AWS_S3_CUSTOM_DOMAIN = 'portfolioscdn.blr1.digitaloceanspaces.com/' + AWS_STORAGE_BUCKET_NAME
 
+    AWS_S3_OBJECT_PARAMETERS = {
+        'CacheControl': 'max-age=86400',
+        'ACL': 'public-read'
+    }
+
+    # Media files configuration
+    DEFAULT_FILE_STORAGE = 'config.storage_backends.MediaStorage'
+
+# Static files (CSS, JavaScript, Images)
+# STATIC_URL = f'https://{AWS_STORAGE_BUCKET_NAME}.{AWS_S3_ENDPOINT_URL}/{AWS_LOCATION}/'
+# STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = 'static/'
+
 STATICFILES_DIRS = [
     BASE_DIR / 'static'
 ]
+STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
 
+MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_URL = 'media/'
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
